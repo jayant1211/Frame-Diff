@@ -10,11 +10,11 @@ EFFECTS = [
     # 'frameEchoes',
 ]
 
-def start(path: str = 'vids/1.mp4', effect: str = EFFECTS[0], control: bool = False) -> None:
+def start(path: str = 'vids/1.mp4', effect: str = EFFECTS[0], control: bool = False, displayScale: float = 1.0) -> None:
     render_effect(path,
                   effect,
-                  control)
-
+                  control,
+                  displayScale)
 
 if __name__ == "__main__":
-    start(control=True)
+    start(control=True, displayScale=.3)

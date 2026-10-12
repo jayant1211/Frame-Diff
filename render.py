@@ -3,7 +3,9 @@
 
 import cv2
 import logging
-from effects.basic import basic
+import numpy as np
+from effects.baseClass import Effect
+import importlib
 
 logging.basicConfig(level=logging.INFO,
                     format= "%(levelname)s : %(message)s")
@@ -20,31 +22,53 @@ def prep(cap: cv2.VideoCapture) -> int:
 
     return int(1000/fps)
 
-def select_effect(effect_name: str) -> object: # or maybe return type should be Effect and define Effect protocol in new baseClass for all effects with inializing shared props, probably unnecessary #TODO
-    if effect_name == 'basic':
-        return basic()
+def select_effect(effect_name: str) -> Effect:
+    try:
+        module = importlib.import_module(f"effects.{effect_name}")
+        effect = getattr(module, effect_name)
+        return effect()
+    except (ModuleNotFoundError, AttributeError):
+        raise ValueError(f"Unknown effect: {effect_name} ")
 
-    raise ValueError(f'Unknown effect: {effect_name}')
+def render_effect(path: str, effect_name: str, control: bool, displayScale: float = 1.0) -> None:
 
-def render_effect(path: str, effect_name: str, control: bool) -> None:
+    
     cap = cv2.VideoCapture(path)
+    
+    if displayScale<=0 or displayScale>1.5:
+        logging.warning('displayScale invalid/too large. defaulting to 1.0')
+        displayScale = 1.0
+    
     delay = prep(cap)
     effect = select_effect(effect_name)
 
-    while True:
-        ret, o_frame = cap.read()
-        if not ret:
-            logging.info('eof')
-            break
+    window_name = f"original vs {effect_name}"
+    cv2.namedWindow(window_name,cv2.WINDOW_NORMAL)
 
-        m_frame = effect.apply(o_frame, control)
-        cv2.imshow("original", o_frame)
-        if m_frame is None:
-            continue
-        cv2.imshow(f'{effect_name}',m_frame)
+    try:
+        while True:
+            ret, o_frame = cap.read()
+            if not ret:
+                logging.info('eof')
+                break
+    
+            m_frame = effect.apply(o_frame, control)
+            
+            if m_frame is None:
+                continue
 
-        if cv2.waitKey(delay) & 0xFF==ord('q'):
-            break
+            combined = np.hstack((o_frame,m_frame))
+            if displayScale!=1.0:
+                combined = cv2.resize(combined,(0,0),fx=displayScale, fy=displayScale)
+            
+            cv2.imshow(window_name, combined)
+    
+            if cv2.waitKey(delay) & 0xFF==ord('q'):
+                break
+    
+    finally:
+        cap.release()
+        cv2.destroyAllWindows()
 
 
 
