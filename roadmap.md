@@ -1,8 +1,7 @@
 ## basics
 - [x] plain frame differencing
 - [x] intensity amplification and brightness controls
-- [ ] contrast stretching
-- [ ] configurable frame gaps
+- [x] configurable frame gaps
 
 ## pixel manipulation
 - [ ] pixel spreading / displacement

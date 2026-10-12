@@ -14,7 +14,8 @@ def start(path: str = 'vids/1.mp4', effect: str = EFFECTS[0], control: bool = Fa
     render_effect(path,
                   effect,
                   control,
-                  displayScale)
+                  displayScale,
+                  grayscale=True)
 
 if __name__ == "__main__":
     start(control=True, displayScale=.3)

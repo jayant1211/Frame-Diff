@@ -30,9 +30,13 @@ def select_effect(effect_name: str) -> Effect:
     except (ModuleNotFoundError, AttributeError):
         raise ValueError(f"Unknown effect: {effect_name} ")
 
-def render_effect(path: str, effect_name: str, control: bool, displayScale: float = 1.0) -> None:
+def to_bgr(img: np.ndarray) -> np.ndarray:
+    """Ensure image has 3 color channels for consistent display & overlays."""
+    if len(img.shape) == 2:
+        return cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+    return img
 
-    
+def render_effect(path: str, effect_name: str, control: bool, displayScale: float = 1.0, grayscale: bool = True) -> None:
     cap = cv2.VideoCapture(path)
     
     if displayScale<=0 or displayScale>1.5:
@@ -47,17 +51,24 @@ def render_effect(path: str, effect_name: str, control: bool, displayScale: floa
 
     try:
         while True:
-            ret, o_frame = cap.read()
+            ret, frame = cap.read()
             if not ret:
                 logging.info('eof')
                 break
-    
+
+            if grayscale and len(frame.shape) == 3:
+                o_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            else:
+                o_frame = frame
+        
             m_frame = effect.apply(o_frame, control)
             
             if m_frame is None:
-                continue
+                logging.info('accumulating frames')
+                m_frame = np.zeros_like(o_frame)
 
-            combined = np.hstack((o_frame,m_frame))
+            combined = np.hstack((to_bgr(frame),to_bgr(m_frame)))
+            
             if displayScale!=1.0:
                 combined = cv2.resize(combined,(0,0),fx=displayScale, fy=displayScale)
             
