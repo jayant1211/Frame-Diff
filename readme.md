@@ -14,7 +14,7 @@ Computes the absolute difference between frames across a configurable temporal g
   * `beta`: Brightness offset.
   * `frame gap`: Distance in time between compared frames (from 1 to 50 frames).
 
-
+<img src="output/1.gif" width="300">
 ---
 
 ### 2. Pixel Displacement (`pixelDisplacement`)
@@ -26,6 +26,7 @@ Extracts motion via dynamic thresholding, smooths edges with Gaussian blur, and 
   * `kernel size`: Gaussian blur radius for softening motion boundaries.
   * `org blend (10x)` / `trail blend (10x)`: Mix ratio between live footage and accumulated ghost trails.
 
+<img src="output/2.gif" width="300">
 
 ---
 
