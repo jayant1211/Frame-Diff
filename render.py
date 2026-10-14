@@ -36,7 +36,7 @@ def to_bgr(img: np.ndarray) -> np.ndarray:
         return cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
     return img
 
-def render_effect(path: str, effect_name: str, control: bool, displayScale: float = 1.0, grayscale: bool = True) -> None:
+def render_effect(path: str, effect_name: str, control: bool, displayScale: float = 1.0, grayscale: bool = True, save: bool = False) -> None:
     cap = cv2.VideoCapture(path)
     
     if displayScale<=0 or displayScale>1.5:
@@ -48,6 +48,10 @@ def render_effect(path: str, effect_name: str, control: bool, displayScale: floa
 
     window_name = f"original vs {effect_name}"
     cv2.namedWindow(window_name,cv2.WINDOW_NORMAL)
+
+    if save:
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        out = cv2.VideoWriter(f'output/{effect_name}.mp4', fourcc, cap.get(cv2.CAP_PROP_FPS), (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))), isColor = not grayscale)
 
     try:
         while True:
@@ -73,7 +77,10 @@ def render_effect(path: str, effect_name: str, control: bool, displayScale: floa
                 combined = cv2.resize(combined,(0,0),fx=displayScale, fy=displayScale)
             
             cv2.imshow(window_name, combined)
-    
+
+            if save:
+                out.write(frame)
+
             if cv2.waitKey(delay) & 0xFF==ord('q'):
                 break
     

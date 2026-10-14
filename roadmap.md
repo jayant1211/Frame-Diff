@@ -4,7 +4,8 @@
 - [x] configurable frame gaps
 
 ## pixel manipulation
-- [ ] pixel spreading / displacement
+- [x] pixel displacement
+- [ ] pixel spreading
 - [ ] color mapping
 - [x] invert differences
 
