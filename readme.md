@@ -14,9 +14,6 @@ Computes the absolute difference between frames across a configurable temporal g
   * `beta`: Brightness offset.
   * `frame gap`: Distance in time between compared frames (from 1 to 50 frames).
 
-https://github.com/user-attachments/assets/basicDifferencing.mp4
-
-<video src="output/basicDifferencing.mp4" controls="controls" width="100%"></video>
 
 ---
 
@@ -29,30 +26,8 @@ Extracts motion via dynamic thresholding, smooths edges with Gaussian blur, and 
   * `kernel size`: Gaussian blur radius for softening motion boundaries.
   * `org blend (10x)` / `trail blend (10x)`: Mix ratio between live footage and accumulated ghost trails.
 
-https://github.com/user-attachments/assets/pixelDifferencing.mp4
-
-<video src="output/pixelDifferencing.mp4" controls="controls" width="100%"></video>
 
 ---
-
-## Core Architecture
-
-```
-main.py ──► render.py ──► effects/<effect_name>.py
-                 │                     │
-                 ▼                     ▼
-          OpenCV Display        frame_buffer.py (deque history)
-```
-
-* **Modular Base Class (`effects/baseClass.py`)**: All effects inherit from the abstract `Effect` interface, enforcing a unified `.apply(frame, control)` contract.
-* **Dynamic Plugin Loading (`render.py`)**: Effects are imported and instantiated at runtime via `importlib` based on their name — no manual import lists required.
-* **Unified Display Layout**: Renders the original footage and effect side-by-side (`hstack`), automatically normalizing channel depth (`to_bgr`) and preventing window overflow with safe scaling (`displayScale`).
-* **Interactive Controls**: Real-time OpenCV trackbars allow live parameter experimentation without restarting playback.
-* **Recording**: Optional MP4 output export matching source FPS and dimensions via OpenCV's `VideoWriter`.
-
----
-
-## Getting Started
 
 ### Prerequisites
 * Python 3.10+
