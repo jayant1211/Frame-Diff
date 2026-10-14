@@ -75,11 +75,11 @@ def render_effect(path: str, effect_name: str, control: bool, displayScale: floa
             
             if displayScale!=1.0:
                 combined = cv2.resize(combined,(0,0),fx=displayScale, fy=displayScale)
-            
-            cv2.imshow(window_name, combined)
 
+            cv2.imshow(window_name, combined)
+            
             if save:
-                out.write(frame)
+                out.write(combined)
 
             if cv2.waitKey(delay) & 0xFF==ord('q'):
                 break
