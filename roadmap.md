@@ -6,7 +6,7 @@
 ## pixel manipulation
 - [ ] pixel spreading / displacement
 - [ ] color mapping
-- [ ] invert differences
+- [x] invert differences
 
 ## temporals
 - [ ] accumulation
